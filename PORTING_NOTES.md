@@ -21,7 +21,7 @@ Fork of [Create Utilities (Unofficial Port)](https://github.com/SmartStreamLabs/
 
 ## Attribution
 
-- Original mod: **Create Utilities** by Duquee_ (MIT License)
+- Original mod: **Create Utilities** by Duqueeee (MIT License)
 - NeoForge port: SmartStreamLabs
 
 ## Build
