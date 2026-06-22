@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "createvoidway:void_casing",
+    "createvoidway:void_motor_input",
+    "createvoidway:void_motor_output",
+    "createvoidway:void_chest_input",
+    "createvoidway:void_chest_output",
+    "createvoidway:void_tank_input",
+    "createvoidway:void_tank_output",
+    "createvoidway:void_battery_input",
+    "createvoidway:void_battery_output",
+    "createvoidway:void_teleport_link",
+    "createvoidway:void_teleport_pad",
+    "createvoidway:void_portal_frame",
+    "createvoidway:void_portal_fluid",
+    "createvoidway:void_portal_stress",
+    "createvoidway:void_portal_connector",
+    "createvoidway:void_node_terminal",
+    "createvoidway:void_node_terminal_top",
+    "createvoidway:amethyst_tiles",
+    "createvoidway:small_amethyst_tiles"
+  ]
+}

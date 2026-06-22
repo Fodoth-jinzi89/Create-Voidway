@@ -36,7 +36,7 @@ public final class VoidNodeTerminalStress {
 			if (node.pos().equals(terminalPos))
 				continue;
 			farthestDistance = Math.max(farthestDistance,
-					VoidNodeDiscovery.distanceBlocks(terminalPos, node.pos()));
+					VoidNodeDiscovery.distanceBlocks(terminalLevel, terminalPos, node.pos()));
 		}
 
 		if (terminalsInCurrentDimension <= 1)

@@ -66,7 +66,8 @@ public final class VoidNodeDiscovery {
 					: buildDefaultName(type, node.pos());
 			String displayName = withDimensionPrefix(renameName, node.dimension(), terminalDimension);
 			boolean currentTerminal = node.dimension().equals(terminalDimension) && node.pos().equals(terminalPos);
-			int distanceBlocks = computeDistanceBlocks(terminalDimension, terminalPos, node.dimension(), node.pos());
+			int distanceBlocks = computeDistanceBlocks(terminalLevel, terminalDimension, terminalPos,
+					node.dimension(), node.pos());
 			entries.add(new VoidNodeEntry(node.dimension(), node.pos(), type.name(), displayName, renameName,
 					currentTerminal, distanceBlocks));
 		}
@@ -110,15 +111,15 @@ public final class VoidNodeDiscovery {
 		return dimensionLabel(dimension) + " \u203A " + base;
 	}
 
-	private static int computeDistanceBlocks(ResourceLocation fromDimension, BlockPos fromPos,
+	private static int computeDistanceBlocks(ServerLevel level, ResourceLocation fromDimension, BlockPos fromPos,
 			ResourceLocation toDimension, BlockPos toPos) {
 		if (!fromDimension.equals(toDimension))
 			return VoidNodeEntry.DISTANCE_OTHER_DIMENSION;
-		return distanceBlocks(fromPos, toPos);
+		return distanceBlocks(level, fromPos, toPos);
 	}
 
-	public static int distanceBlocks(BlockPos fromPos, BlockPos toPos) {
-		return (int) Math.round(Math.sqrt(fromPos.distSqr(toPos)));
+	public static int distanceBlocks(ServerLevel level, BlockPos fromPos, BlockPos toPos) {
+		return com.xeli.createvoidway.compat.VoidwaySableCompat.distanceBlocks(level, fromPos, toPos);
 	}
 
 	public static String dimensionLabel(ResourceLocation dimension) {

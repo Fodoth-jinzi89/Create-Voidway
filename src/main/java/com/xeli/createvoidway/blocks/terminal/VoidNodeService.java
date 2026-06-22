@@ -2,6 +2,7 @@ package com.xeli.createvoidway.blocks.terminal;
 
 import com.xeli.createvoidway.VoidwayMod;
 import com.xeli.createvoidway.blocks.RWBlocks;
+import com.xeli.createvoidway.compat.VoidwaySableCompat;
 import com.xeli.createvoidway.blocks.voidtypes.VoidLinkBehaviour;
 import com.xeli.createvoidway.blocks.voidtypes.motor.VoidMotorNetworkHandler.NetworkKey;
 import com.xeli.createvoidway.config.VoidwayConfig;
@@ -82,9 +83,10 @@ public final class VoidNodeService {
 			return false;
 		}
 
-		Vec3 target = Vec3.atBottomCenterOf(targetPos).add(0, 2.05, 0);
+		Vec3 target = VoidwaySableCompat.globalTeleportPos(targetLevel, targetPos, 2.05);
 		player.teleportTo(targetLevel, target.x, target.y, target.z, java.util.Collections.emptySet(),
 				player.getYRot(), player.getXRot());
+		VoidwaySableCompat.inheritSubLevelVelocity(targetLevel, player, target);
 		targetLevel.playSound(null, targetPos, net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT,
 				net.minecraft.sounds.SoundSource.PLAYERS, 0.6f, 1f);
 		return true;

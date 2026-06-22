@@ -1,5 +1,6 @@
 package com.xeli.createvoidway.blocks.teleport;
 
+import com.xeli.createvoidway.compat.VoidwaySableCompat;
 import com.xeli.createvoidway.config.VoidwayConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -111,7 +112,8 @@ public final class VoidTeleportHelper {
 	}
 
 	public static void teleportTo(ServerLevel level, Entity entity, BlockPos destinationPad, boolean playEffects) {
-		Vec3 target = Vec3.atBottomCenterOf(destinationPad).add(0, VoidTeleportPadBlock.PLATE_HEIGHT + 0.05, 0);
+		double yOffset = VoidTeleportPadBlock.PLATE_HEIGHT + 0.05;
+		Vec3 target = VoidwaySableCompat.globalTeleportPos(level, destinationPad, yOffset);
 		if (entity instanceof ServerPlayer player) {
 			player.teleportTo(level, target.x, target.y, target.z, Collections.emptySet(),
 					player.getYRot(), player.getXRot());
@@ -122,6 +124,7 @@ public final class VoidTeleportHelper {
 			entity.setDeltaMovement(Vec3.ZERO);
 		}
 		entity.fallDistance = 0;
+		VoidwaySableCompat.inheritSubLevelVelocity(level, entity, target);
 		setContactCooldown(entity);
 		if (playEffects)
 			playTeleportEffects(level, destinationPad, BlockPos.containing(entity.position()));

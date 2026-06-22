@@ -27,6 +27,14 @@ sourceSets.main.resources {
 repositories {
     maven { url = 'https://maven.createmod.net' }
     maven { url = 'https://maven.ithundxr.dev/snapshots' }
+    exclusiveContent {
+        forRepository {
+            maven { url = 'https://maven.ryanhcode.dev/releases' }
+        }
+        filter {
+            includeGroup('dev.ryanhcode.sable-companion')
+        }
+    }
     mavenCentral()
 }
 
@@ -106,6 +114,11 @@ dependencies {
     compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
     localRuntime("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
     implementation("com.tterrag.registrate:Registrate:${registrate_version}")
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:[${sable_companion_version},)")) {
+        version {
+            prefer(sable_companion_version)
+        }
+    }
 }
 
 def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
@@ -116,6 +129,7 @@ def generateModMetadata = tasks.register('generateModMetadata', ProcessResources
             neo_version_range              : neo_version_range,
             loader_version_range           : loader_version_range,
             create_version_range           : create_version_range,
+            sable_version_range            : sable_version_range,
             mod_id                         : mod_id,
             mod_name                       : mod_name,
             mod_license                    : mod_license,

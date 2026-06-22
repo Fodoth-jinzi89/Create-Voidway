@@ -4,15 +4,16 @@ import com.simibubi.create.Create;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.xeli.createvoidway.VoidwayMod;
 import com.xeli.createvoidway.blocks.voidtypes.VoidLinkBehaviour;
+import com.xeli.createvoidway.compat.VoidwaySableCompat;
 import com.xeli.createvoidway.blocks.voidtypes.motor.VoidMotorNetworkHandler.NetworkKey;
 import net.createmod.catnip.levelWrappers.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
@@ -264,7 +265,7 @@ public class VoidTeleportNetworkHandler {
 			Iterator<BlockPos> it = network.iterator();
 			BlockPos first = it.next();
 			BlockPos second = it.next();
-			linkDistance = VoidTeleportLinkMetrics.computeDistanceBlocks(first, second);
+			linkDistance = VoidTeleportLinkMetrics.computeDistanceBlocks(VoidwaySableCompat.levelFrom(world), first, second);
 		}
 
 		for (BlockPos pos : network) {

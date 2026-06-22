@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "createvoidway:void_steel_ladder",
+    "createvoidway:void_steel_bars",
+    "createvoidway:void_steel_scaffolding"
+  ]
+}

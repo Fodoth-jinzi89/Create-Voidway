@@ -2,6 +2,7 @@ package com.xeli.createvoidway.blocks.portal;
 
 import com.xeli.createvoidway.blocks.RWBlocks;
 import com.xeli.createvoidway.blocks.teleport.VoidTeleportHelper;
+import com.xeli.createvoidway.compat.VoidwaySableCompat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -74,7 +75,7 @@ public final class VoidPortalHelper {
 
 	public static void teleportTo(ServerLevel level, Entity entity, VoidPortalShape destination) {
 		BlockPos spawn = destination.getSpawnPos();
-		Vec3 target = Vec3.atBottomCenterOf(spawn).add(0, 0.05, 0);
+		Vec3 target = VoidwaySableCompat.globalTeleportPos(level, spawn, 0.05);
 		if (entity instanceof ServerPlayer player) {
 			player.teleportTo(level, target.x, target.y, target.z, Collections.emptySet(),
 					player.getYRot(), player.getXRot());
@@ -85,6 +86,7 @@ public final class VoidPortalHelper {
 			entity.setDeltaMovement(Vec3.ZERO);
 		}
 		entity.fallDistance = 0;
+		VoidwaySableCompat.inheritSubLevelVelocity(level, entity, target);
 		VoidTeleportHelper.setContactCooldown(entity);
 		level.playSound(null, spawn, SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.BLOCKS, 0.6f, 1.2f);
 		level.playSound(null, BlockPos.containing(entity.position()), SoundEvents.ENDERMAN_TELEPORT,
