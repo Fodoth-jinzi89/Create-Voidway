@@ -12,6 +12,11 @@ public class RWItems {
 	public static final ItemEntry<Item> POLISHED_AMETHYST = ingredient("polished_amethyst");
 	public static final ItemEntry<Item> GRAVITON_TUBE = ingredient("graviton_tube");
 
+	public static final ItemEntry<PortableVoidTerminalItem> PORTABLE_VOID_TERMINAL = REGISTRATE
+			.item("portable_void_terminal", PortableVoidTerminalItem::new)
+			.properties(p -> p.stacksTo(1).rarity(net.minecraft.world.item.Rarity.EPIC))
+			.register();
+
 	private static ItemEntry<Item> ingredient(String name) {
 		return REGISTRATE.item(name, Item::new)
 				.register();

@@ -33,11 +33,12 @@ import java.util.List;
 public class VoidNodeTerminalTileEntity extends KineticBlockEntity
 		implements MenuProvider, IHaveGoggleInformation {
 
-	public static final int FLUID_CAPACITY = 4000;
+	public static final int FLUID_CAPACITY = 5000;
 
 	private VoidTerminalLinkBehaviour link;
 	private int openCount;
 	private int syncedStressDemand;
+	private long teleportCooldownUntilGameTime;
 
 	private final VoidTransferFluidTank fluidTank = new VoidTransferFluidTank(FLUID_CAPACITY, () -> {
 		if (level == null || level.isClientSide)
@@ -108,6 +109,18 @@ public class VoidNodeTerminalTileEntity extends KineticBlockEntity
 		return hasRequiredStress() && hasSufficientTransferFluid();
 	}
 
+	public boolean isTeleportOnCooldown() {
+		return level != null && level.getGameTime() < teleportCooldownUntilGameTime;
+	}
+
+	public void startPortableTeleportCooldown() {
+		if (level == null || level.isClientSide)
+			return;
+		long cooldownTicks = VoidwayConfig.getPortableVoidTerminalCooldownSeconds() * 20L;
+		teleportCooldownUntilGameTime = level.getGameTime() + cooldownTicks;
+		sendData();
+	}
+
 	public boolean acceptsFluidFrom(Direction side) {
 		if (side == null)
 			return false;
@@ -141,6 +154,8 @@ public class VoidNodeTerminalTileEntity extends KineticBlockEntity
 			openCount = tag.getInt("OpenCount");
 		if (clientPacket && tag.contains("StressDemand"))
 			syncedStressDemand = tag.getInt("StressDemand");
+		if (tag.contains("TeleportCooldownUntil"))
+			teleportCooldownUntilGameTime = tag.getLong("TeleportCooldownUntil");
 		if (tag.contains("FluidTank")) {
 			fluidTank.readFromNBT(registries, tag.getCompound("FluidTank"));
 			fluidTank.purgeInvalidContents();
@@ -154,6 +169,9 @@ public class VoidNodeTerminalTileEntity extends KineticBlockEntity
 			tag.putInt("OpenCount", openCount);
 		if (clientPacket)
 			tag.putInt("StressDemand", syncedStressDemand);
+		if (clientPacket)
+			tag.putLong("TeleportCooldownUntil", teleportCooldownUntilGameTime);
+		tag.putLong("TeleportCooldownUntil", teleportCooldownUntilGameTime);
 		tag.put("FluidTank", fluidTank.writeToNBT(registries, new CompoundTag()));
 		super.write(tag, registries, clientPacket);
 	}
@@ -166,7 +184,7 @@ public class VoidNodeTerminalTileEntity extends KineticBlockEntity
 	@Nullable
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-		if (!canOperate())
+		if (!canOperate() || isTeleportOnCooldown())
 			return null;
 		if (player instanceof ServerPlayer serverPlayer)
 			VoidNodeService.sendNodeList(serverPlayer, this);

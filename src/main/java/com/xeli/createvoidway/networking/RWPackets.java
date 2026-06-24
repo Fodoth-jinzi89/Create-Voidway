@@ -1,5 +1,8 @@
 package com.xeli.createvoidway.networking;
 
+import com.xeli.createvoidway.networking.packets.PortableVoidTerminalListPacket;
+import com.xeli.createvoidway.networking.packets.PortableVoidTerminalRequestListPacket;
+import com.xeli.createvoidway.networking.packets.PortableVoidTerminalTeleportPacket;
 import com.xeli.createvoidway.networking.packets.VoidBatteryUpdatePacket;
 import com.xeli.createvoidway.networking.packets.VoidChestUpdatePacket;
 import com.xeli.createvoidway.networking.packets.VoidNodeListPacket;
@@ -12,7 +15,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public final class RWPackets {
 
-	public static final String NETWORK_VERSION = "6";
+	public static final String NETWORK_VERSION = "8";
 
 	private RWPackets() {
 	}
@@ -27,5 +30,11 @@ public final class RWPackets {
 				VoidNodeRequestListPacket::handle);
 		registrar.playToServer(VoidNodeRenamePacket.TYPE, VoidNodeRenamePacket.STREAM_CODEC, VoidNodeRenamePacket::handle);
 		registrar.playToServer(VoidNodeTeleportPacket.TYPE, VoidNodeTeleportPacket.STREAM_CODEC, VoidNodeTeleportPacket::handle);
+		registrar.playToServer(PortableVoidTerminalRequestListPacket.TYPE, PortableVoidTerminalRequestListPacket.STREAM_CODEC,
+				PortableVoidTerminalRequestListPacket::handle);
+		registrar.playToClient(PortableVoidTerminalListPacket.TYPE, PortableVoidTerminalListPacket.STREAM_CODEC,
+				PortableVoidTerminalListPacket::handle);
+		registrar.playToServer(PortableVoidTerminalTeleportPacket.TYPE, PortableVoidTerminalTeleportPacket.STREAM_CODEC,
+				PortableVoidTerminalTeleportPacket::handle);
 	}
 }

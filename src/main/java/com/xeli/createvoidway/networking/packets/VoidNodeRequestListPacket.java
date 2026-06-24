@@ -25,6 +25,8 @@ public record VoidNodeRequestListPacket(BlockPos terminalPos) implements CustomP
 				return;
 			if (!terminal.canOperate() || !terminal.getLink().canInteract(player))
 				return;
+			if (terminal.isTeleportOnCooldown())
+				return;
 			VoidNodeService.sendNodeList(player, terminal);
 		});
 	}

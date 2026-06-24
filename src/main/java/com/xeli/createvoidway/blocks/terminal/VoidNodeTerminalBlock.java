@@ -6,6 +6,8 @@ import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.xeli.createvoidway.blocks.RWBlocks;
 import com.xeli.createvoidway.blocks.voidtypes.VoidLinkBehaviour;
+import com.xeli.createvoidway.blocks.voidtypes.VoidMachineBlockInteraction;
+import com.xeli.createvoidway.items.RWItems;
 import com.xeli.createvoidway.voidlink.VoidLinkHandler;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -114,19 +116,12 @@ public class VoidNodeTerminalBlock extends HorizontalDirectionalBlock
 	@Override
 	public ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
 			Player player, InteractionHand hand, BlockHitResult hit) {
-		if (heldItem.isEmpty())
+		if (!player.isShiftKeyDown() && heldItem.is(RWItems.PORTABLE_VOID_TERMINAL.get()))
 			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-		BlockPos linkPos = resolveLinkPos(level, pos);
-		VoidLinkBehaviour link = BlockEntityBehaviour.get(level, linkPos, VoidLinkBehaviour.TYPE);
-		if (link != null) {
-			for (int index : VoidLinkHandler.arr012) {
-				if (link.testHit(index, hit.getLocation()))
-					return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-			}
-		}
-
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		BlockPos basePos = resolveLinkPos(level, pos);
+		return VoidMachineBlockInteraction.useItemOnMachine(player, hit, level, basePos,
+				() -> useWithoutItem(level.getBlockState(basePos), level, basePos, player, hit));
 	}
 
 	@Override
@@ -161,6 +156,11 @@ public class VoidNodeTerminalBlock extends HorizontalDirectionalBlock
 
 		if (terminal.getLink().getFrequencyStack(true).isEmpty() || terminal.getLink().getFrequencyStack(false).isEmpty()) {
 			player.displayClientMessage(Component.translatable("createvoidway.void_node_terminal.frequency_incomplete"), true);
+			return net.minecraft.world.InteractionResult.FAIL;
+		}
+
+		if (terminal.isTeleportOnCooldown()) {
+			player.displayClientMessage(Component.translatable("createvoidway.void_node_terminal.teleport_cooldown"), true);
 			return net.minecraft.world.InteractionResult.FAIL;
 		}
 

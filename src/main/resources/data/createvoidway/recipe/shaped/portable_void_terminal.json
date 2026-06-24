@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "createvoidway:polished_amethyst"
+    },
+    "G": {
+      "item": "createvoidway:graviton_tube"
+    },
+    "T": {
+      "item": "createvoidway:void_node_terminal"
+    }
+  },
+  "pattern": [
+    "A",
+    "T",
+    "G"
+  ],
+  "result": {
+    "count": 1,
+    "id": "createvoidway:portable_void_terminal"
+  }
+}

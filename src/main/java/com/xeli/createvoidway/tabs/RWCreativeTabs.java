@@ -47,6 +47,7 @@ public class RWCreativeTabs {
 						output.accept(RWBlocks.VOID_PORTAL_STRESS);
 						output.accept(RWBlocks.VOID_PORTAL_CONNECTOR);
 						output.accept(RWBlocks.VOID_NODE_TERMINAL);
+						output.accept(RWItems.PORTABLE_VOID_TERMINAL);
 						output.accept(RWItems.POLISHED_AMETHYST);
 						output.accept(RWItems.GRAVITON_TUBE);
 						output.accept(RWBlocks.LSHAPED_GEARBOX);

@@ -6,6 +6,8 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import com.xeli.createvoidway.blocks.voidtypes.chest.VoidChestContainer;
 import com.xeli.createvoidway.blocks.voidtypes.chest.VoidChestScreen;
+import com.xeli.createvoidway.blocks.terminal.PortableVoidTerminalContainer;
+import com.xeli.createvoidway.blocks.terminal.PortableVoidTerminalScreen;
 import com.xeli.createvoidway.blocks.terminal.VoidNodeTerminalContainer;
 import com.xeli.createvoidway.blocks.terminal.VoidNodeTerminalScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,6 +23,9 @@ public class RWContainerTypes {
 
 	public static final MenuEntry<VoidNodeTerminalContainer> VOID_NODE_TERMINAL =
 			register("void_node_terminal", VoidNodeTerminalContainer::new, () -> VoidNodeTerminalScreen::new);
+
+	public static final MenuEntry<PortableVoidTerminalContainer> PORTABLE_VOID_TERMINAL =
+			register("portable_void_terminal", PortableVoidTerminalContainer::new, () -> PortableVoidTerminalScreen::new);
 
 	private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(
 			String name, MenuBuilder.ForgeMenuFactory<C> factory, NonNullSupplier<MenuBuilder.ScreenFactory<C, S>> screenFactory) {
