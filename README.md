@@ -80,6 +80,9 @@ Ponder scenes cover void motors, chests, tanks, batteries, I/O pairing, the node
 | NeoForge | `21.1.x` (tested on `21.1.222`) |
 | Create | `6.0.9+` |
 | Java | `21` |
+| [Sable](https://github.com/ryanhcode/sable) (optional) | `1.2.0+` — moving structures / sub-levels |
+
+When Sable is installed, distance checks, teleports, and frequency-slot rendering account for sub-level coordinates. **Sable Companion** is bundled in the mod JAR and provides safe vanilla fallbacks when Sable is absent.
 
 ## Build
 

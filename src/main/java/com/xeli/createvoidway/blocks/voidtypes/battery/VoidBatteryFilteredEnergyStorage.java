@@ -12,24 +12,65 @@ public class VoidBatteryFilteredEnergyStorage implements IEnergyStorage {
 
 	private final IEnergyStorage delegate;
 	private final Mode mode;
+	private final float transferLossFraction;
 
 	public VoidBatteryFilteredEnergyStorage(IEnergyStorage delegate, Mode mode) {
+		this(delegate, mode, 0f);
+	}
+
+	public VoidBatteryFilteredEnergyStorage(IEnergyStorage delegate, Mode mode, float transferLossFraction) {
 		this.delegate = delegate;
 		this.mode = mode;
+		this.transferLossFraction = Math.clamp(transferLossFraction, 0f, 1f);
 	}
 
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		if (mode != Mode.INSERT_ONLY)
 			return 0;
-		return delegate.receiveEnergy(maxReceive, simulate);
+		int stored = delegate.receiveEnergy(applyInsertLoss(maxReceive), simulate);
+		return Math.min(reverseInsertLoss(stored), maxReceive);
 	}
 
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {
 		if (mode != Mode.EXTRACT_ONLY)
 			return 0;
-		return delegate.extractEnergy(maxExtract, simulate);
+		if (transferLossFraction <= 0f)
+			return delegate.extractEnergy(maxExtract, simulate);
+		int requestedFromChannel = reverseExtractLoss(maxExtract);
+		int extracted = delegate.extractEnergy(requestedFromChannel, simulate);
+		return Math.min(applyExtractLoss(extracted), maxExtract);
+	}
+
+	private int applyInsertLoss(int amount) {
+		if (transferLossFraction <= 0f || amount <= 0)
+			return amount;
+		return (int) (amount * (1f - transferLossFraction));
+	}
+
+	private int reverseInsertLoss(int stored) {
+		if (transferLossFraction <= 0f || stored <= 0)
+			return stored;
+		float efficiency = 1f - transferLossFraction;
+		if (efficiency <= 0f)
+			return 0;
+		return Math.min((int) Math.ceil(stored / efficiency), Integer.MAX_VALUE);
+	}
+
+	private int applyExtractLoss(int amount) {
+		if (transferLossFraction <= 0f || amount <= 0)
+			return amount;
+		return (int) (amount * (1f - transferLossFraction));
+	}
+
+	private int reverseExtractLoss(int desiredDelivery) {
+		if (transferLossFraction <= 0f || desiredDelivery <= 0)
+			return desiredDelivery;
+		float efficiency = 1f - transferLossFraction;
+		if (efficiency <= 0f)
+			return 0;
+		return Math.min((int) Math.ceil(desiredDelivery / efficiency), Integer.MAX_VALUE);
 	}
 
 	@Override

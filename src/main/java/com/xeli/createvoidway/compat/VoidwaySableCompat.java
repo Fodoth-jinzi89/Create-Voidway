@@ -13,6 +13,10 @@ public final class VoidwaySableCompat {
 	private VoidwaySableCompat() {
 	}
 
+	public static Vec3 getEyePositionInterpolated(Entity entity, float partialTick) {
+		return SableCompanion.INSTANCE.getEyePositionInterpolated(entity, partialTick);
+	}
+
 	public static int distanceBlocks(@Nullable Level level, BlockPos from, BlockPos to) {
 		double dx = (from.getX() + 0.5) - (to.getX() + 0.5);
 		double dy = (from.getY() + 0.5) - (to.getY() + 0.5);

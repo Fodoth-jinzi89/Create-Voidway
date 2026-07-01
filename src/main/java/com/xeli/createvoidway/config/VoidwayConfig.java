@@ -49,8 +49,17 @@ public final class VoidwayConfig {
 			.defineInRange("voidBatteryStressAtFullChannel", 8192, 0, 1000000);
 
 	private static final ModConfigSpec.IntValue VOID_BATTERY_TRANSFER_FLUID_DRAIN_MB = BUILDER
-			.comment("Void transfer fluid drained per tick while a void battery is operating.")
+			.comment("Void transfer fluid drained per tick while a void battery is operating with fluid.")
 			.defineInRange("voidBatteryTransferFluidDrainMbPerTick", 1, 0, 10000);
+
+	private static final ModConfigSpec.IntValue VOID_BATTERY_DRY_TRANSFER_MAX_LOSS_PERCENT = BUILDER
+			.comment("Maximum energy loss percentage when a void battery transfers without void transfer fluid.")
+			.comment("Loss scales linearly with link distance up to voidBatteryDryTransferMaxLossDistanceBlocks.")
+			.defineInRange("voidBatteryDryTransferMaxLossPercent", 40, 0, 100);
+
+	private static final ModConfigSpec.IntValue VOID_BATTERY_DRY_TRANSFER_MAX_LOSS_DISTANCE_BLOCKS = BUILDER
+			.comment("Link distance in blocks at which dry void battery transfer reaches voidBatteryDryTransferMaxLossPercent.")
+			.defineInRange("voidBatteryDryTransferMaxLossDistanceBlocks", 1000, 1, 10000000);
 
 	private static final ModConfigSpec.IntValue VOID_TANK_STRESS_BASE = BUILDER
 			.comment("Stress demand (SU) for void tank input and output when the linked channel is empty.")
@@ -139,6 +148,8 @@ public final class VoidwayConfig {
 	private static int voidBatteryStressBase = VOID_BATTERY_STRESS_BASE.getDefault();
 	private static int voidBatteryStressAtFullChannel = VOID_BATTERY_STRESS_AT_FULL_CHANNEL.getDefault();
 	private static int voidBatteryTransferFluidDrainMbPerTick = VOID_BATTERY_TRANSFER_FLUID_DRAIN_MB.getDefault();
+	private static int voidBatteryDryTransferMaxLossPercent = VOID_BATTERY_DRY_TRANSFER_MAX_LOSS_PERCENT.getDefault();
+	private static int voidBatteryDryTransferMaxLossDistanceBlocks = VOID_BATTERY_DRY_TRANSFER_MAX_LOSS_DISTANCE_BLOCKS.getDefault();
 	private static int voidTankStressBase = VOID_TANK_STRESS_BASE.getDefault();
 	private static int voidTankStressAtFullChannel = VOID_TANK_STRESS_AT_FULL_CHANNEL.getDefault();
 	private static int voidTankTransferFluidDrainMbPerTick = VOID_TANK_TRANSFER_FLUID_DRAIN_MB.getDefault();
@@ -202,6 +213,14 @@ public final class VoidwayConfig {
 
 	public static int getVoidBatteryTransferFluidDrainMbPerTick() {
 		return voidBatteryTransferFluidDrainMbPerTick;
+	}
+
+	public static int getVoidBatteryDryTransferMaxLossPercent() {
+		return voidBatteryDryTransferMaxLossPercent;
+	}
+
+	public static int getVoidBatteryDryTransferMaxLossDistanceBlocks() {
+		return voidBatteryDryTransferMaxLossDistanceBlocks;
 	}
 
 	public static int getVoidTankStressBase() {
@@ -290,6 +309,8 @@ public final class VoidwayConfig {
 		voidBatteryStressBase = VOID_BATTERY_STRESS_BASE.get();
 		voidBatteryStressAtFullChannel = VOID_BATTERY_STRESS_AT_FULL_CHANNEL.get();
 		voidBatteryTransferFluidDrainMbPerTick = VOID_BATTERY_TRANSFER_FLUID_DRAIN_MB.get();
+		voidBatteryDryTransferMaxLossPercent = VOID_BATTERY_DRY_TRANSFER_MAX_LOSS_PERCENT.get();
+		voidBatteryDryTransferMaxLossDistanceBlocks = VOID_BATTERY_DRY_TRANSFER_MAX_LOSS_DISTANCE_BLOCKS.get();
 		voidTankStressBase = VOID_TANK_STRESS_BASE.get();
 		voidTankStressAtFullChannel = VOID_TANK_STRESS_AT_FULL_CHANNEL.get();
 		voidTankTransferFluidDrainMbPerTick = VOID_TANK_TRANSFER_FLUID_DRAIN_MB.get();

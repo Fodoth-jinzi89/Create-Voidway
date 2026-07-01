@@ -137,27 +137,27 @@ public final class VoidTeleportHelper {
 	public static void depositItemOnPad(ServerLevel level, BlockPos padPos, ItemStack stack) {
 		if (stack.isEmpty())
 			return;
-		double x = padPos.getX() + 0.5;
-		double y = padPos.getY() + VoidTeleportPadBlock.PLATE_HEIGHT + 0.05;
-		double z = padPos.getZ() + 0.5;
-		ItemEntity entity = new ItemEntity(level, x, y, z, stack.copy());
+		Vec3 target = VoidwaySableCompat.globalTeleportPos(level, padPos,
+				VoidTeleportPadBlock.PLATE_HEIGHT + 0.05);
+		ItemEntity entity = new ItemEntity(level, target.x, target.y, target.z, stack.copy());
 		entity.setDefaultPickUpDelay();
 		entity.setDeltaMovement(0, 0.15, 0);
+		VoidwaySableCompat.inheritSubLevelVelocity(level, entity, target);
 		level.addFreshEntity(entity);
 	}
 
 	public static void spawnItemAtPad(ServerLevel level, BlockPos destinationPad, ItemStack stack) {
 		if (stack.isEmpty())
 			return;
-		double x = destinationPad.getX() + 0.5;
-		double y = destinationPad.getY() + VoidTeleportPadBlock.PLATE_HEIGHT + 0.05;
-		double z = destinationPad.getZ() + 0.5;
-		ItemEntity entity = new ItemEntity(level, x, y, z, stack.copy());
+		Vec3 target = VoidwaySableCompat.globalTeleportPos(level, destinationPad,
+				VoidTeleportPadBlock.PLATE_HEIGHT + 0.05);
+		ItemEntity entity = new ItemEntity(level, target.x, target.y, target.z, stack.copy());
 		entity.setDefaultPickUpDelay();
 		entity.setDeltaMovement(0, 0.15, 0);
+		VoidwaySableCompat.inheritSubLevelVelocity(level, entity, target);
 		level.addFreshEntity(entity);
 		setContactCooldown(entity);
-		playTeleportEffects(level, destinationPad, BlockPos.containing(x, y, z));
+		playTeleportEffects(level, destinationPad, BlockPos.containing(target));
 	}
 
 	private static void playTeleportEffects(ServerLevel level, BlockPos destinationPad, BlockPos sourcePos) {

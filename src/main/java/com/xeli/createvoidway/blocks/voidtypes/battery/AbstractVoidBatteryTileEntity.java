@@ -148,7 +148,32 @@ public abstract class AbstractVoidBatteryTileEntity extends KineticBlockEntity
 	}
 
 	public boolean canOperate() {
-		return hasRequiredStress() && hasSufficientTransferFluid();
+		if (!hasRequiredStress())
+			return false;
+		if (networkUsesEfficientTransfer())
+			return hasSufficientTransferFluid();
+		return true;
+	}
+
+	public boolean networkUsesEfficientTransfer() {
+		return VoidBatteryLinkMetrics.networkHasFluidOnBothSides(this);
+	}
+
+	public boolean usesEfficientTransfer() {
+		return canOperate() && networkUsesEfficientTransfer();
+	}
+
+	public int getDryTransferLossPercent() {
+		return VoidBatteryLinkMetrics.computeDryTransferLossPercent(
+				VoidBatteryLinkMetrics.computeLinkDistanceBlocks(this));
+	}
+
+	public boolean isDryTransferMode() {
+		return hasRequiredStress() && !networkUsesEfficientTransfer();
+	}
+
+	public float getDryTransferLossFraction() {
+		return VoidBatteryLinkMetrics.effectiveTransferLossFraction(this);
 	}
 
 	public FluidTank getFluidTank() {
@@ -185,16 +210,19 @@ public abstract class AbstractVoidBatteryTileEntity extends KineticBlockEntity
 
 	public IEnergyStorage getEnergyHandler() {
 		VoidBatteryFilteredEnergyStorage.Mode mode = VoidBatteryFilteredEnergyStorage.Mode.BLOCKED;
+		float transferLoss = 0f;
 		if (canOperate()) {
 			mode = isVoidBatteryInput() ? VoidBatteryFilteredEnergyStorage.Mode.INSERT_ONLY
 					: VoidBatteryFilteredEnergyStorage.Mode.EXTRACT_ONLY;
+			if (!networkUsesEfficientTransfer())
+				transferLoss = getDryTransferLossFraction();
 		}
-		return new VoidBatteryFilteredEnergyStorage(getBattery(), mode);
+		return new VoidBatteryFilteredEnergyStorage(getBattery(), mode, transferLoss);
 	}
 
 	@Override
 	public float calculateStressApplied() {
-		if (!hasShaftConnection() || Math.abs(getTheoreticalSpeed()) == 0)
+		if (!canOperate() || !hasShaftConnection() || Math.abs(getTheoreticalSpeed()) == 0)
 			return 0;
 		return VoidChannelStress.toImpactPerRpm(getChannelStressDemand(), getTheoreticalSpeed());
 	}
@@ -223,7 +251,7 @@ public abstract class AbstractVoidBatteryTileEntity extends KineticBlockEntity
 	@Override
 	public void tick() {
 		super.tick();
-		if (level != null && !level.isClientSide && hasRequiredStress())
+		if (level != null && !level.isClientSide && usesEfficientTransfer())
 			fluidTank.drain(getTransferFluidDrainThisTick(), IFluidHandler.FluidAction.EXECUTE);
 	}
 
@@ -251,10 +279,14 @@ public abstract class AbstractVoidBatteryTileEntity extends KineticBlockEntity
 		boolean added = containedFluidTooltip(tooltip, isPlayerSneaking, fluidTank);
 
 		int speed = (int) Math.abs(getTheoreticalSpeed());
-		VoidStorageGoggleTooltip.addKineticStatus(tooltip, "void_battery", speed,
+		VoidStorageGoggleTooltip.addBatteryKineticStatus(tooltip, speed,
 				getChannelStressDemand(), getTransferFluidDrainThisTick(),
 				hasShaftConnection(), hasSource(), isOverStressed(), hasRequiredStress(),
-				hasSufficientTransferFluid(), canOperate());
+				hasSufficientTransferFluid(), canOperate(), networkUsesEfficientTransfer(),
+				isDryTransferMode(), getDryTransferLossPercent(),
+				VoidBatteryLinkMetrics.computeLinkDistanceBlocks(this),
+				linkedPartners,
+				VoidBatteryLinkMetrics.getNetworkFluidReadiness(this));
 
 		return added;
 	}
