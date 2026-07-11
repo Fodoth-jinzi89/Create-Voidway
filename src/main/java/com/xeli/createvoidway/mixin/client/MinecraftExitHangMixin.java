@@ -8,8 +8,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftExitHangMixin {
@@ -28,14 +30,16 @@ public abstract class MinecraftExitHangMixin {
 		beginShutdown();
 	}
 
-	@Redirect(
-			method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/server/IntegratedServer;isShutdown()Z"))
-	private boolean createvoidway$breakWaitForServer(IntegratedServer server) {
-		if (ExitHangGuard.isShuttingDown())
-			return true;
-		return server.isShutdown();
-	}
+    @ModifyExpressionValue(
+        method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/server/IntegratedServer;isShutdown()Z"
+        )
+    )
+    private boolean createvoidway$breakWaitForServer(boolean original) {
+        return ExitHangGuard.isShuttingDown() || original;
+    }
 
 	private void beginShutdown() {
 		ExitHangGuard.markShuttingDown();
